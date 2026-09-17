@@ -5,10 +5,23 @@
 <link rel="icon" type="image/png" href="logo.png"/>
 <link rel="icon" type="image/svg+xml" href="logo.svg"/>
 <link rel="apple-touch-icon" href="logo.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
 @layer base{
   html,body{margin:0;padding:0;scroll-behavior:smooth;}
   body{overscroll-behavior:none;}
@@ -1394,7 +1407,7 @@ tailwind.config = {
         }
       } catch (err) {
         console.error("Extraction error:", err);
-        showError('Could not reach the server. Please ensure python app.py is running on port 5000.');
+        showError(err.message || 'Could not reach the server. Please check your network connection.');
         if (loadingState) loadingState.classList.add('hidden');
       } finally {
         isExtracting = false;
