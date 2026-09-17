@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <!-- Rounded squircle badge background with subtle glowing gradient -->
+  <rect width="40" height="40" rx="10" fill="#141414" />
+  <rect x="0.5" y="0.5" width="39" height="39" rx="9.5" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="none" />
+  
+  <!-- Left hook (bright silver gradient) -->
+  <path d="M19 13.5H13.5C10.4624 13.5 8 15.9624 8 19C8 22.0376 10.4624 24.5 13.5 24.5H19" 
+        stroke="url(#leftGrad)" stroke-width="3.2" stroke-linecap="round" />
+        
+  <!-- Right hook (subtle metallic gradient) -->
+  <path d="M21 15.5H26.5C29.5376 15.5 32 17.9624 32 21C32 24.0376 29.5376 26.5 26.5 26.5H21" 
+        stroke="url(#rightGrad)" stroke-width="3.2" stroke-linecap="round" />
+        
+  <!-- Center connecting bar (pure luminous white) -->
+  <rect x="14" y="18.2" width="12" height="3.6" rx="1.8" fill="#FFFFFF" />
+
+  <defs>
+    <linearGradient id="leftGrad" x1="8" y1="13.5" x2="19" y2="24.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#D0D0D0" />
+    </linearGradient>
+    <linearGradient id="rightGrad" x1="21" y1="15.5" x2="32" y2="26.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C0C0C0" />
+      <stop offset="1" stop-color="#8E8E8E" />
+    </linearGradient>
+  </defs>
+</svg>

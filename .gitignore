@@ -1,0 +1,52 @@
+# ==========================================
+# ClipDrop - Git Ignore Rules
+# ==========================================
+
+# Temporary & Downloaded Media
+downloads/
+tmp/
+*.mp4
+*.mp3
+*.m4a
+*.webm
+*.mkv
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Binaries & Bundled Archives
+bin/deno
+bin/deno.exe
+bin/*.zip
+bin/*.tar.gz
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Vercel deployment cache
+.vercel/
+
+# Scratch & Archive files
+*.zip
+generate_svgs.py
+extracted/

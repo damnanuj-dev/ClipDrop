@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClipDrop — YouTube Creator Toolkit &amp; Video Downloader</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="apple-touch-icon" href="logo.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+@layer base{
+  html,body{margin:0;padding:0;scroll-behavior:smooth;}
+  body{overscroll-behavior:none;}
+  main>:first-child{margin-top:0!important;}
+  main>:last-child{margin-bottom:0!important;}
+}
+::-webkit-scrollbar{display:none;}
+
+/* Staggered Hero Keyframe Animations */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--hero-translate, 16px));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-anim-pill {
+  --hero-translate: 10px;
+  animation: fadeInSlideUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
+  opacity: 0;
+}
+.hero-anim-title {
+  --hero-translate: 16px;
+  animation: fadeInSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards;
+  opacity: 0;
+}
+.hero-anim-text {
+  --hero-translate: 14px;
+  animation: fadeInSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 220ms forwards;
+  opacity: 0;
+}
+.hero-anim-dock {
+  --hero-translate: 18px;
+  animation: fadeInSlideUp 650ms cubic-bezier(0.16, 1, 0.3, 1) 320ms forwards;
+  opacity: 0;
+}
+.hero-anim-assurances {
+  --hero-translate: 10px;
+  animation: fadeInSlideUp 550ms cubic-bezier(0.16, 1, 0.3, 1) 400ms forwards;
+  opacity: 0;
+}
+.hero-anim-stats {
+  --hero-translate: 14px;
+  animation: fadeInSlideUp 600ms cubic-bezier(0.16, 1, 0.3, 1) 480ms forwards;
+  opacity: 0;
+}
+
+/* Input Shake Animation on Invalid State */
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-7px); }
+  40%, 80% { transform: translateX(7px); }
+}
+.input-shake {
+  animation: shakeInput 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Linear/Apple Glass Card Hover Physics */
+.glass-card-lift {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow, border-color;
+}
+.glass-card-lift:hover {
+  transform: translateY(-4px) scale(1.006);
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Interactive Category Pills */
+.tool-pill {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease;
+}
+.tool-pill:hover {
+  transform: translateY(-1.5px);
+  background-color: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+/* Premium Button Physics & Tactile Click */
+.btn-primary-motion {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary-motion:hover {
+  transform: scale(1.015);
+  filter: brightness(1.06);
+  box-shadow: 0 8px 24px -4px rgba(255, 255, 255, 0.22);
+}
+.btn-primary-motion:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary-motion {
+  transition: transform 0.2s ease,
+              background-color 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease;
+}
+.btn-secondary-motion:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px);
+}
+.btn-secondary-motion:active {
+  transform: scale(0.98);
+}
+
+/* Header & Footer Nav Links subtle slide underline */
+.nav-link-animated {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav-link-animated::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.85);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link-animated:hover::after {
+  width: 100%;
+}
+
+/* Scroll-triggered reveal animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Grid stagger children */
+.stagger-group .stagger-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 550ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 550ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stagger-group.is-visible .stagger-item:nth-child(1) { transition-delay: 40ms; opacity: 1; transform: translateY(0); }
+.stagger-group.is-visible .stagger-item:nth-child(2) { transition-delay: 90ms; opacity: 1; transform: translateY(0); }
+.stagger-group.is-visible .stagger-item:nth-child(3) { transition-delay: 140ms; opacity: 1; transform: translateY(0); }
+.stagger-group.is-visible .stagger-item:nth-child(4) { transition-delay: 190ms; opacity: 1; transform: translateY(0); }
+.stagger-group.is-visible .stagger-item:nth-child(5) { transition-delay: 240ms; opacity: 1; transform: translateY(0); }
+.stagger-group.is-visible .stagger-item:nth-child(6) { transition-delay: 290ms; opacity: 1; transform: translateY(0); }
+
+/* Share Popover Smooth Scale & Opacity */
+#share-popover {
+  opacity: 0;
+  transform: scale(0.95) translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#share-popover.popover-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* URL Input Dock Focus Ring Physics */
+.hero-dock-box {
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-dock-box:focus-within {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 28px rgba(255, 255, 255, 0.08), 0 12px 40px -8px rgba(0, 0, 0, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Input container target glow effect when scrolled from CTA */
+.pulse-focus-ring {
+  animation: heroPulseBorder 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2 alternate;
+}
+@keyframes heroPulseBorder {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+  100% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+}
+
+/* Quality selector radio row smooth switch */
+.format-option-row {
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.format-option-row:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Horizontal linear skeleton shimmer */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.skeleton-shimmer-box {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+.skeleton-shimmer-box::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: shimmer 1.5s infinite ease-in-out;
+}
+
+/* Dynamic card slide-up appearance */
+.fade-in-up {
+  animation: fadeInSlideUp 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth Accordion Expansion */
+.accordion-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-wrapper.is-expanded {
+  grid-template-rows: 1fr;
+}
+.accordion-inner {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "background": "#070707",
+        "surface": "#0d0d0d",
+        "surface-container-lowest": "#050505",
+        "surface-container-low": "#0a0a0a",
+        "surface-container": "#121212",
+        "surface-container-high": "#181818",
+        "surface-container-highest": "#222222",
+        "primary": "#ffffff",
+        "on-primary": "#050505",
+        "primary-container": "#e5e5e5",
+        "on-primary-container": "#1a1a1a",
+        "secondary": "#d4d4d4",
+        "on-secondary": "#171717",
+        "tertiary": "#a3a3a3",
+        "on-surface": "#f5f5f5",
+        "on-surface-variant": "#a1a1a1",
+        "outline": "#737373",
+        "outline-variant": "#2a2a2a"
+      },
+      borderRadius: {
+        DEFAULT: "0.25rem",
+        lg: "0.5rem",
+        xl: "0.75rem",
+        "2xl": "1rem",
+        "3xl": "1.25rem",
+        full: "9999px"
+      },
+      spacing: {
+        "space-2xs": "0.25rem",
+        "space-xs": "0.5rem",
+        "space-sm": "0.75rem",
+        "space-md": "1rem",
+        "space-lg": "1.5rem",
+        "space-xl": "2rem",
+        "space-2xl": "3rem",
+        "space-3xl": "4rem",
+        "margin": "2rem",
+        "margin-tablet": "1.5rem",
+        "margin-mobile": "1rem"
+      },
+      fontFamily: {
+        display: ["Space Grotesk", "Inter", "sans-serif"],
+        headline: ["Space Grotesk", "Inter", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        code: ["JetBrains Mono", "monospace"]
+      }
+    }
+  }
+}
+</script></head>
+<body class="bg-[#070707] font-body text-[#f5f5f5] selection:bg-white/20 selection:text-white min-h-screen">
+<!-- ========================================================================= -->
+<!-- NAVIGATION HEADER                                                         -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-0 right-0 w-full z-50 bg-[#070707]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.9)]">
+<div class="h-20 max-w-[1200px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm shrink-0">
+<a class="flex items-center gap-2.5 focus:outline-none group" data-path="home" href="#">
+<img alt="ClipDrop Logo" class="h-8 w-8 object-contain rounded-lg border border-white/20 bg-[#141414] transition-all duration-300 group-hover:scale-105 group-hover:border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.08)]" src="logo.png" onerror="this.onerror=null; this.src='logo.svg';"/>
+<span class="font-display text-xl tracking-tight text-white font-semibold flex items-center">
+          ClipDrop
+          <span class="inline-block w-1.5 h-1.5 rounded-full ml-1.5 bg-white/70"></span>
+</span>
+</a>
+</div>
+<nav class="hidden lg:flex items-center gap-7">
+<a class="nav-focus-downloader nav-link-animated text-sm font-medium text-[#a1a1a1] hover:text-white" data-path="tools" href="#hero-downloader-container">Tools</a>
+<a class="nav-focus-downloader nav-link-animated text-sm font-medium text-[#a1a1a1] hover:text-white" data-path="downloaders" href="#hero-downloader-container">Downloaders</a>
+<a class="nav-link-animated text-sm font-medium text-[#a1a1a1] hover:text-white" data-path="creator-tools" href="#creator-tools-section">Creator Tools</a>
+<a class="nav-link-animated text-sm font-medium text-[#a1a1a1] hover:text-white" data-path="pricing" href="#pricing-section">Always Free</a>
+<a class="nav-link-animated text-sm font-medium text-[#a1a1a1] hover:text-white" data-path="faq" href="#faq-accordion-section">FAQ</a>
+</nav>
+<div class="flex items-center gap-3 shrink-0">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] text-[#a1a1a1] hover:text-white transition-all border border-white/[0.08] focus:outline-none btn-secondary-motion" type="button">
+<span class="material-symbols-outlined text-[16px]">language</span>
+<span class="font-code text-xs tracking-wider uppercase font-medium">EN</span>
+</button>
+<a class="nav-focus-downloader px-4 py-2 rounded-xl text-xs font-semibold text-black bg-white hover:bg-neutral-200 shadow-[0_0_20px_-3px_rgba(255,255,255,0.3)] btn-primary-motion cursor-pointer" data-path="get-started" href="#hero-downloader-container">
+<span>Get Started</span>
+</a>
+<div class="w-8 h-8 rounded-full bg-white/[0.08] border border-white/[0.12] flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white/90 text-[18px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="w-full pt-20 bg-[#070707]">
+<div class="flex flex-col w-full text-[#f5f5f5] selection:bg-white/20 selection:text-white relative overflow-hidden">
+<!-- Neutral Ambient Smoked Grey Glows -->
+<div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-white/[0.04] blur-[150px] rounded-full -z-10"></div>
+<div class="pointer-events-none absolute top-[1200px] -left-64 w-[600px] h-[600px] bg-white/[0.02] blur-[160px] rounded-full -z-10"></div>
+<div class="pointer-events-none absolute top-[2800px] -right-64 w-[700px] h-[700px] bg-white/[0.03] blur-[180px] rounded-full -z-10"></div>
+<div class="pointer-events-none absolute bottom-96 left-1/3 w-[800px] h-[500px] bg-white/[0.03] blur-[160px] rounded-full -z-10"></div>
+<!-- ========================================================================= -->
+<!-- 1. HERO SECTION & PRIMARY WORKING DOWNLOADER                              -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin pt-14 pb-16 flex flex-col items-center text-center">
+<!-- Hero Status Pill -->
+<div class="hero-anim-pill inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.1] backdrop-blur-xl shadow-[0_4px_16px_rgba(0,0,0,0.5)] mb-6">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-medium">Fast • Simple • Free</span>
+</div>
+<!-- Massive Focal Headline -->
+<h1 class="hero-anim-title font-display text-4xl md:text-6xl font-bold max-w-4xl tracking-tight text-white leading-tight">
+        Everything you need <br class="hidden sm:inline"/>
+<span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4d4d4] to-[#8a8a8a]">for YouTube.</span>
+</h1>
+<p class="hero-anim-text mt-6 text-base md:text-lg text-[#a1a1a1] max-w-2xl leading-relaxed">
+        Download, analyze, and manage YouTube content with studio-grade tools built for creators, editors, and digital storytellers.
+</p>
+<!-- PRIMARY URL CAPTURE DOCK -->
+<div class="hero-anim-dock w-full max-w-3xl mt-10 relative group" id="hero-downloader-container">
+<div class="absolute -inset-0.5 rounded-2xl bg-white/[0.15] blur-md opacity-40 group-hover:opacity-75 transition duration-500 group-focus-within:opacity-100 group-focus-within:blur-lg pointer-events-none"></div>
+<div class="hero-dock-box relative flex items-center bg-[#0d0d0d]/90 backdrop-blur-2xl p-2 md:p-2.5 rounded-2xl border border-white/[0.12] shadow-[0_12px_40px_-8px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.06)]" id="dock-input-box">
+<div class="pl-3.5 pr-2 flex items-center text-[#737373] shrink-0">
+<span class="material-symbols-outlined text-[22px] text-white/80">link</span>
+</div>
+<input class="w-full bg-transparent border-none outline-none text-sm md:text-base text-white placeholder:text-[#737373] focus:ring-0 px-2" id="hero-url-input" placeholder="Paste your YouTube link here..." type="text" value="" autocomplete="off" spellcheck="false"/>
+<button id="hero-clear-btn" class="hidden text-[#737373] hover:text-white mr-2 p-1 transition-colors" type="button" title="Clear input"><span class="material-symbols-outlined text-[18px]">close</span></button>
+<button class="relative shrink-0 flex items-center gap-1.5 px-5 md:px-7 py-3 rounded-xl text-xs md:text-sm font-semibold text-black bg-white hover:bg-neutral-200 shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)] btn-primary-motion cursor-pointer" id="hero-submit-btn" type="button">
+<span id="hero-btn-label">Download</span>
+<span class="material-symbols-outlined text-[18px]" id="hero-btn-icon">arrow_forward</span>
+</button>
+</div>
+<!-- Inline Validation Error Container -->
+<div class="hidden mt-2.5 px-4 py-2.5 rounded-xl bg-red-950/40 border border-red-500/30 text-red-200 text-xs text-left flex items-center gap-2 backdrop-blur-md transition-all" id="url-error-msg">
+<span class="material-symbols-outlined text-[16px] text-red-400">error</span>
+<span id="url-error-text">Please enter a valid YouTube URL.</span>
+</div>
+</div>
+<!-- Microcopy Assurances -->
+<div class="hero-anim-assurances flex flex-wrap items-center justify-center gap-y-2 gap-x-6 mt-5 text-xs text-[#737373]">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-white/90 text-[16px]">check_circle</span> No signup required</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-white/70 text-[16px]">bolt</span> Instant extraction</span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-white/70 text-[16px]">devices</span> Studio-grade 4K support</span>
+</div>
+<!-- ========================================================================= -->
+<!-- DYNAMIC INLINE HERO RESULTS AREA (SKELETON & FULL RESULT CARD)             -->
+<!-- ========================================================================= -->
+<div class="w-full max-w-4xl mt-8 text-left" id="hero-interactive-flow-area">
+<!-- SKELETON LOADING CARD -->
+<div class="hidden w-full relative rounded-3xl p-[1px] bg-gradient-to-b from-white/[0.18] via-white/[0.06] to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.8)] mb-6" id="hero-loading-state">
+<div class="bg-[#0e0e0e]/95 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6">
+<div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+<div class="flex items-center gap-3">
+<div class="skeleton-shimmer-box h-5 w-44 rounded-lg"></div>
+<div class="skeleton-shimmer-box h-5 w-24 rounded-full"></div>
+</div>
+<div class="skeleton-shimmer-box h-8 w-24 rounded-xl"></div>
+</div>
+<div class="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white/[0.02] p-4 md:p-5 rounded-2xl border border-white/[0.06]">
+<div class="skeleton-shimmer-box w-full md:w-64 aspect-video rounded-xl shrink-0"></div>
+<div class="space-y-3 flex-1 w-full">
+<div class="skeleton-shimmer-box h-6 w-3/4 rounded-lg"></div>
+<div class="skeleton-shimmer-box h-4 w-1/2 rounded-lg"></div>
+<div class="flex gap-2 pt-2">
+<div class="skeleton-shimmer-box h-6 w-28 rounded-full"></div>
+<div class="skeleton-shimmer-box h-6 w-36 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Skeleton Shimmer Progress Bar -->
+<div class="space-y-2 py-1">
+<div class="flex items-center justify-between text-xs font-code text-[#a1a1a1]">
+<span class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined text-[16px] animate-spin">sync</span>
+<span>Extracting video manifests and available resolutions...</span>
+</span>
+<span id="skeleton-progress-pct" class="hidden"></span>
+</div>
+<div class="w-full bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
+<div class="bg-white h-full transition-all duration-300 rounded-full" id="skeleton-bar-fill" style="width: 75%;"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="skeleton-shimmer-box h-60 rounded-2xl"></div>
+<div class="skeleton-shimmer-box h-60 rounded-2xl"></div>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE RESULT CARD -->
+<div class="hidden w-full relative rounded-3xl p-[1px] bg-gradient-to-b from-white/[0.18] via-white/[0.06] to-transparent shadow-[0_20px_50px_rgba(0,0,0,0.8)]" id="hero-result-card">
+<div class="glass-card-lift bg-[#0e0e0e]/95 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6">
+<!-- Result Bar Status Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-white">Video Processed Successfully</span>
+<span class="px-2 py-0.5 rounded-full bg-white/[0.08] text-white/90 font-code text-[11px] border border-white/[0.15]">Ready for Download</span>
+</div>
+</div>
+<!-- Share Popover Toggle -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-[#a1a1a1] hover:text-white text-xs font-medium border border-white/[0.1] btn-secondary-motion cursor-pointer" id="reset-downloader-btn" type="button" title="Start another download"><span class="material-symbols-outlined text-[15px]">refresh</span><span>New Download</span></button>
+<div class="relative">
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-[#f5f5f5] text-xs font-medium border border-white/[0.12] btn-secondary-motion cursor-pointer" id="share-btn" type="button">
+<span class="material-symbols-outlined text-[16px] text-white/80">share</span>
+<span id="share-btn-label">Share Link</span>
+</button>
+<!-- Share Dropdown Popover -->
+<div class="absolute right-0 mt-2 w-60 p-2 bg-[#141414]/95 backdrop-blur-xl border border-white/[0.15] rounded-xl shadow-2xl z-30 space-y-1" id="share-popover">
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/[0.08] text-xs text-[#f5f5f5] flex items-center justify-between group transition-all cursor-pointer" id="copy-share-url" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-white" id="share-copy-icon">content_copy</span>
+<span id="copy-text-main">Copy URL</span>
+</span>
+<span class="hidden text-white font-code text-[11px] items-center gap-1 transition-opacity duration-200" id="copy-badge">
+<span class="material-symbols-outlined text-[14px]">check</span> Copied!
+              </span>
+</button>
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/[0.08] text-xs text-[#f5f5f5] flex items-center justify-between group transition-all cursor-pointer" id="copy-asset-url" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-[#a1a1a1]" id="share-embed-icon">code</span>
+<span id="copy-asset-label">Embed Player</span>
+</span>
+<span class="hidden text-white font-code text-[11px] items-center gap-1 transition-opacity duration-200" id="asset-copy-badge">
+<span class="material-symbols-outlined text-[14px]">check</span> Copied!
+              </span>
+</button>
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-white/[0.08] text-xs text-[#f5f5f5] flex items-center justify-between group transition-all cursor-pointer" id="copy-qr-url" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-[#a1a1a1]" id="share-qr-icon">qr_code_2</span>
+<span id="copy-qr-label">QR Code Link</span>
+</span>
+<span class="hidden text-white font-code text-[11px] items-center gap-1 transition-opacity duration-200" id="qr-copy-badge">
+<span class="material-symbols-outlined text-[14px]">check</span> Copied!
+              </span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Video Metadata Summary Card -->
+<div class="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white/[0.02] p-4 md:p-5 rounded-2xl border border-white/[0.06] transition-colors hover:border-white/[0.14]">
+<!-- Thumbnail Frame -->
+<div class="relative w-full md:w-64 aspect-video rounded-xl overflow-hidden shrink-0 group border border-white/[0.08] bg-white/[0.02]">
+<img id="res-video-thumb" alt="Video Preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src=""/>
+<span id="res-video-duration" class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/85 backdrop-blur-sm text-white font-code text-xs font-medium">--:--</span>
+<div id="res-video-max-res" class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-white font-code text-[10px] font-semibold tracking-wider border border-white/20">HD</div>
+</div>
+<!-- Video Specs Info -->
+<div class="space-y-2 flex-1">
+<div class="flex items-center gap-2">
+<span class="font-display text-lg text-white line-clamp-1 font-semibold" id="res-video-title"></span>
+</div>
+<div class="flex items-center gap-2 text-[#a1a1a1] text-xs">
+<span class="font-medium text-white flex items-center gap-1" id="res-video-channel"></span>
+<span>•</span>
+<span id="res-video-views">0 views</span>
+</div>
+<div class="flex flex-wrap gap-2 pt-1 font-code text-xs">
+<span class="px-2.5 py-0.5 rounded-full bg-white/[0.05] text-[#a1a1a1] border border-white/[0.06]" id="res-video-fps">Original FPS: 60</span>
+<span class="px-2.5 py-0.5 rounded-full bg-white/[0.05] text-[#a1a1a1] border border-white/[0.06]">Audio: Stereo MP3</span>
+<span class="px-2.5 py-0.5 rounded-full bg-white/[0.05] text-[#a1a1a1] border border-white/[0.06]">Format: Direct Stream</span>
+</div>
+</div>
+</div>
+<!-- Active Download Progress Bar & Toast State -->
+<div class="hidden bg-white/[0.03] border border-white/[0.12] p-4 rounded-2xl space-y-2 transition-all" id="download-progress-box">
+<div class="flex items-center justify-between text-xs font-code">
+<span class="text-white font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-white" id="progress-spinner-icon">sync</span>
+<span id="progress-action-title">Packaging direct stream...</span>
+</span>
+<span class="text-[#a1a1a1] font-medium" id="progress-percent-label">0%</span>
+</div>
+<div class="w-full bg-white/[0.06] rounded-full h-2 overflow-hidden border border-white/[0.08]">
+<div class="bg-white h-full rounded-full transition-all duration-150" id="progress-bar-fill" style="width: 0%"></div>
+</div>
+<div class="text-[11px] text-[#737373] font-code flex items-center justify-between">
+<span id="progress-subtext">Connecting to high-speed CDN edge nodes...</span>
+<span id="progress-speed">32.4 MB/s</span>
+</div>
+</div>
+<!-- Download Selectors Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+<!-- Column 1: Video (MP4) -->
+<div class="glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-5 flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-lg bg-white/[0.08] border border-white/[0.1] flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">movie</span>
+</span>
+<div>
+<h3 class="text-sm font-semibold text-white">Video Download</h3>
+<p class="text-xs text-[#737373]">Format: MP4 (H.264 / AAC)</p>
+</div>
+</div>
+<span class="font-code text-xs text-white bg-white/[0.08] border border-white/[0.12] px-2 py-0.5 rounded">High Bitrate</span>
+</div>
+<!-- Quality Selector Radio Pills -->
+<div class="space-y-2" id="video-quality-list">
+<!-- Dynamic Video Qualities -->
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-black bg-white hover:bg-neutral-200 shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)] btn-primary-motion cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" id="dl-video-btn" type="button">
+<span class="material-symbols-outlined text-[20px]" id="dl-video-icon">download</span>
+<span id="dl-video-text">Download MP4</span>
+</button>
+</div>
+<!-- Column 2: Audio (MP3) -->
+<div class="glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-5 flex flex-col justify-between space-y-4">
+<div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-lg bg-white/[0.08] border border-white/[0.1] flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+</span>
+<div>
+<h3 class="text-sm font-semibold text-white">Audio Extract</h3>
+<p class="text-xs text-[#737373]">Format: MP3 (Direct Audio Stream)</p>
+</div>
+</div>
+<span class="font-code text-xs text-white bg-white/[0.08] border border-white/[0.12] px-2 py-0.5 rounded">Lossless VBR</span>
+</div>
+<!-- Bitrate Options -->
+<div class="space-y-2" id="audio-quality-list">
+<!-- Dynamic Audio Qualities -->
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium text-[#f5f5f5] bg-white/[0.06] border border-white/[0.12] btn-secondary-motion cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" id="dl-audio-btn" type="button">
+<span class="material-symbols-outlined text-[20px] text-white/80" id="dl-audio-icon">music_note</span>
+<span id="dl-audio-text">Download MP3</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 2. TRUST / STATS ROW                                                      -->
+<!-- ========================================================================= -->
+<div class="hero-anim-stats glass-card-lift w-full max-w-4xl mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] p-4 md:p-6 rounded-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)]">
+<div class="flex flex-col items-center justify-center p-3 border-r border-white/[0.06] last:border-none">
+<span class="font-display text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-tr from-white to-[#a3a3a3] tracking-tight">100K+</span>
+<span class="text-xs text-[#a1a1a1] mt-0.5">Creators Worldwide</span>
+</div>
+<div class="flex flex-col items-center justify-center p-3 sm:border-r border-white/[0.06] last:border-none">
+<span class="font-display text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-tr from-white to-[#a3a3a3] tracking-tight">20+</span>
+<span class="text-xs text-[#a1a1a1] mt-0.5">Free Creator Tools</span>
+</div>
+<div class="flex flex-col items-center justify-center p-3 border-r border-white/[0.06] last:border-none">
+<span class="font-display text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-tr from-white to-[#a3a3a3] tracking-tight">4K UHD</span>
+<span class="text-xs text-[#a1a1a1] mt-0.5">Lossless Fidelity</span>
+</div>
+<div class="flex flex-col items-center justify-center p-3">
+<span class="font-display text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-tr from-white via-[#d4d4d4] to-[#a3a3a3] tracking-tight">&lt; 3s</span>
+<span class="text-xs text-[#a1a1a1] mt-0.5">Processing Speed</span>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 3. SECONDARY CALLOUT / REFINED CTA CARD                                  -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible">
+<div class="glass-card-lift p-8 rounded-3xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl relative overflow-hidden shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)]">
+<div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/[0.03] rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="max-w-2xl space-y-2">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Instant Extractor</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Ready to download?</h2>
+<p class="text-sm md:text-base text-[#a1a1a1]">Paste any YouTube video, Shorts, or playlist URL into our studio-grade extractor above to get started.</p>
+</div>
+<div class="shrink-0">
+<button class="nav-focus-downloader px-7 py-3.5 rounded-xl text-sm font-semibold text-black bg-white hover:bg-neutral-200 shadow-[0_0_20px_-4px_rgba(255,255,255,0.3)] btn-primary-motion cursor-pointer flex items-center gap-2" type="button">
+<span>Start Download ↑</span>
+</button>
+</div>
+</div>
+<!-- Supported Direct Formats Pills -->
+<div class="flex flex-wrap items-center gap-2 mt-6 pt-6 border-t border-white/[0.06]">
+<span class="font-code text-[11px] text-[#737373] mr-1">Direct Formats:</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.12] text-white font-code text-xs font-semibold border border-white/30">MP4 (Video)</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.04] text-[#a1a1a1] font-code text-xs border border-white/[0.08]">MP3 (Audio)</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.04] text-[#a1a1a1] font-code text-xs border border-white/[0.08]">WEBM</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.08] text-white font-code text-xs font-medium border border-white/20">4K HDR</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.04] text-[#a1a1a1] font-code text-xs border border-white/[0.08]">1080p 60fps</span>
+<span class="px-3 py-1 rounded-lg bg-white/[0.04] text-[#a1a1a1] font-code text-xs border border-white/[0.08]">720p</span>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. HOW IT WORKS (3 SIMPLE STEPS)                                         -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible">
+<div class="text-center space-y-3 mb-12">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Workflow Engine</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">From URL to download in seconds.</h2>
+<p class="text-sm md:text-base text-[#a1a1a1] max-w-xl mx-auto">No cumbersome desktop installers, no background trackers, and zero rate limits.</p>
+</div>
+<div class="stagger-group grid grid-cols-1 md:grid-cols-3 gap-6 is-visible">
+<!-- Step 1 -->
+<div class="stagger-item glass-card-lift relative bg-white/[0.03] border border-white/[0.08] rounded-2xl p-7 flex flex-col justify-between group shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="font-display text-3xl text-white/30 font-bold group-hover:text-white transition-colors">01</span>
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[26px]">content_paste</span>
+</div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Paste the URL</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Copy any standard YouTube video, Shorts, or playlist address and drop it straight into the ClipDrop capture box.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-white/[0.06] text-[#737373] font-code text-xs flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span> Validates all YouTube URL types
+          </div>
+</div>
+<!-- Step 2 -->
+<div class="stagger-item glass-card-lift relative bg-white/[0.03] border border-white/[0.08] rounded-2xl p-7 flex flex-col justify-between group shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="font-display text-3xl text-white/30 font-bold group-hover:text-white transition-colors">02</span>
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[26px]">tune</span>
+</div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Choose your format</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              See the available resolutions, bitrates, audio layers, and exact file sizes before beginning the transfer.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-white/[0.06] text-[#737373] font-code text-xs flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#d4d4d4]"></span> Auto-selects peak quality
+          </div>
+</div>
+<!-- Step 3 -->
+<div class="stagger-item glass-card-lift relative bg-white/[0.03] border border-white/[0.08] rounded-2xl p-7 flex flex-col justify-between group shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="font-display text-3xl text-white/30 font-bold group-hover:text-white transition-colors">03</span>
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[26px]">cloud_download</span>
+</div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Download instantly</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Select the file you need and direct-stream straight to your storage with ultra-fast edge server connections.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-white/[0.06] text-[#737373] font-code text-xs flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span> Direct CDN bypass pipes
+          </div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 5. TOOL CATEGORIES (EXTENSIVE SUITE - 4 CATEGORY BENTO)                   -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible" id="creator-tools-section">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+<div class="space-y-2">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Comprehensive Suite</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Everything you need for YouTube</h2>
+<p class="text-sm md:text-base text-[#a1a1a1]">Simple, hyper-focused utilities designed to eliminate tedious creator bottlenecks.</p>
+</div>
+<a class="nav-focus-downloader mt-4 md:mt-0 inline-flex items-center gap-1 text-white font-medium text-xs hover:underline btn-secondary-motion px-3 py-1.5 rounded-lg border border-white/[0.08]" href="#hero-downloader-container">
+          Explore full index (24 tools) <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="stagger-group grid grid-cols-1 md:grid-cols-2 gap-6 is-visible">
+<!-- Category 1: Downloaders -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 group flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white flex items-center justify-center">
+<span class="material-symbols-outlined">download</span>
+</div>
+<div>
+<h3 class="font-display text-lg text-white font-semibold">Downloaders</h3>
+<p class="text-xs text-[#a1a1a1]">Direct offline asset extractors</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 my-4">
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Video Downloader</a>
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">YouTube to MP3</a>
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Shorts Downloader</a>
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Thumbnail Downloader</a>
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Channel Avatar</a>
+<a class="nav-focus-downloader tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Banner Grabber</a>
+</div>
+</div>
+<a class="nav-focus-downloader text-white/80 hover:text-white text-xs font-medium flex items-center gap-1 mt-3 group-hover:translate-x-1 transition-transform duration-200" href="#hero-downloader-container">
+            View all downloaders <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<!-- Category 2: Creator Tools -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 group flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white flex items-center justify-center">
+<span class="material-symbols-outlined">auto_fix_high</span>
+</div>
+<div>
+<h3 class="font-display text-lg text-white font-semibold">Creator Tools</h3>
+<p class="text-xs text-[#a1a1a1]">AI-enhanced production workflows</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 my-4">
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Video Analyzer</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Transcript Generator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Subtitle Downloader</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Video Summary</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Video to Notes</a>
+</div>
+</div>
+<a class="text-white/80 hover:text-white text-xs font-medium flex items-center gap-1 mt-3 group-hover:translate-x-1 transition-transform duration-200" href="#hero-downloader-container">
+            View all creator tools <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<!-- Category 3: SEO & Metadata -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 group flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white flex items-center justify-center">
+<span class="material-symbols-outlined">sell</span>
+</div>
+<div>
+<h3 class="font-display text-lg text-white font-semibold">SEO &amp; Metadata</h3>
+<p class="text-xs text-[#a1a1a1]">Discovery and search ranking optimization</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 my-4">
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Title Generator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Description Generator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Tag Extractor</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Tag Generator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Channel Name Checker</a>
+</div>
+</div>
+<a class="text-white/80 hover:text-white text-xs font-medium flex items-center gap-1 mt-3 group-hover:translate-x-1 transition-transform duration-200" href="#hero-downloader-container">
+            View all SEO utilities <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<!-- Category 4: Analytics -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 group flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white flex items-center justify-center">
+<span class="material-symbols-outlined">insights</span>
+</div>
+<div>
+<h3 class="font-display text-lg text-white font-semibold">Channel Analytics</h3>
+<p class="text-xs text-[#a1a1a1]">Data insights and competitive intelligence</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 my-4">
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Channel ID Finder</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Engagement Calculator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Playlist Length Calculator</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Monetization Checker</a>
+<a class="tool-pill px-3 py-1.5 rounded-lg bg-white/[0.04] text-xs text-[#d4d4d4] border border-white/[0.06]" href="#hero-downloader-container">Copyright Scanner</a>
+</div>
+</div>
+<a class="text-white/80 hover:text-white text-xs font-medium flex items-center gap-1 mt-3 group-hover:translate-x-1 transition-transform duration-200" href="#hero-downloader-container">
+            View all analytics <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. FEATURED DOWNLOADERS                                                   -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-12 scroll-reveal is-visible">
+<div class="space-y-2 mb-8">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Quick Launch</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Popular download tools</h2>
+</div>
+<div class="stagger-group grid grid-cols-1 md:grid-cols-3 gap-6 is-visible">
+<!-- Tool 1 -->
+<a class="nav-focus-downloader stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)] cursor-pointer" href="#hero-downloader-container">
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[28px]">video_library</span>
+</div>
+<h3 class="font-display text-lg text-white font-semibold">YouTube Video Downloader</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1]">Download public videos in available qualities and audio formats up to 4K 60FPS.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center gap-1 text-white font-medium text-xs group-hover:translate-x-1 transition-transform duration-200">
+            Open tool <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</div>
+</a>
+<!-- Tool 2 -->
+<a class="nav-focus-downloader stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)] cursor-pointer" href="#hero-downloader-container">
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[28px]">electric_bolt</span>
+</div>
+<h3 class="font-display text-lg text-white font-semibold">YouTube Shorts Downloader</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1]">Save public vertical Shorts with original sound and zero added watermarks.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center gap-1 text-white font-medium text-xs group-hover:translate-x-1 transition-transform duration-200">
+            Open tool <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</div>
+</a>
+<!-- Tool 3 -->
+<a class="nav-focus-downloader stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl group relative overflow-hidden flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)] cursor-pointer" href="#hero-downloader-container">
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white group-hover:scale-105 transition-transform duration-200">
+<span class="material-symbols-outlined text-[28px]">image</span>
+</div>
+<h3 class="font-display text-lg text-white font-semibold">YouTube Thumbnail Downloader</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1]">Extract maximum resolution (HD, FHD, 4K) thumbnail cover images instantly.</p>
+</div>
+<div class="mt-6 pt-4 border-t border-white/[0.06] flex items-center gap-1 text-white font-medium text-xs group-hover:translate-x-1 transition-transform duration-200">
+            Open tool <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</div>
+</a>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 7. CREATOR FEATURES                                                      -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible">
+<div class="space-y-2 mb-12">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Deep Workflow Engine</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Create more from every video.</h2>
+<p class="text-sm md:text-base text-[#a1a1a1] max-w-xl">Harness data and structural insights from top performing videos in your niche.</p>
+</div>
+<div class="stagger-group grid grid-cols-1 md:grid-cols-3 gap-6 is-visible">
+<!-- Feature 1: Analyze -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="w-full h-36 rounded-xl bg-black/60 border border-white/[0.06] p-3 flex flex-col justify-between mb-5 relative overflow-hidden">
+<div class="flex items-center justify-between text-[#737373] font-code text-xs">
+<span>HOOK RETENTION</span>
+<span class="text-white font-medium">84.2%</span>
+</div>
+<!-- Monochrome retention graph -->
+<svg class="w-full h-16 text-white" fill="none" viewbox="0 0 100 40">
+<path d="M 0,10 Q 20,5 35,18 T 70,14 T 100,28" stroke="#E5E5E5" stroke-linecap="round" stroke-width="2"></path>
+<path d="M 0,10 Q 20,5 35,18 T 70,14 T 100,28 L 100,40 L 0,40 Z" fill="rgba(255, 255, 255, 0.08)"></path>
+</svg>
+<div class="flex justify-between font-code text-[10px] text-[#737373]">
+<span>0:00</span>
+<span>1:30</span>
+<span>3:00</span>
+</div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Analyze Patterns</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Understand hooks, narrative pacing, audio spikes, and visual changes across viral YouTube uploads.
+            </p>
+</div>
+</div>
+<!-- Feature 2: Repurpose -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="w-full h-36 rounded-xl bg-black/60 border border-white/[0.06] p-3 flex flex-col justify-between mb-5 font-code text-xs">
+<div class="flex items-center justify-between text-[#737373]">
+<span>SRT / VTT EXTRACT</span>
+<span class="text-white font-medium">AI Denoise</span>
+</div>
+<div class="space-y-1.5 py-1">
+<div class="h-2 w-full bg-white/20 rounded-full"></div>
+<div class="h-2 w-4/5 bg-white/40 rounded-full"></div>
+<div class="h-2 w-2/3 bg-white/20 rounded-full"></div>
+</div>
+<div class="flex items-center gap-2 text-[#a1a1a1] text-xs">
+<span class="material-symbols-outlined text-[14px] text-white">check</span> 100% timecoded accuracy
+              </div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Repurpose Content</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Extract verbatim transcripts, structured summaries, and translated subtitles directly into Markdown or TXT.
+            </p>
+</div>
+</div>
+<!-- Feature 3: Optimize -->
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 flex flex-col justify-between shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<div>
+<div class="w-full h-36 rounded-xl bg-black/60 border border-white/[0.06] p-3 flex flex-col justify-between mb-5">
+<div class="flex items-center justify-between text-[#737373] font-code text-xs">
+<span>CTR PREDICTOR</span>
+<span class="text-white font-medium">9.2 / 10</span>
+</div>
+<div class="space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-white"></span>
+<span class="text-xs text-white">Curiosity Gap High</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#a1a1a1]"></span>
+<span class="text-xs text-white">Keywords Indexed</span>
+</div>
+</div>
+<div class="text-[#737373] font-code text-[11px]">Ranked #2 on primary tag</div>
+</div>
+<h3 class="font-display text-lg text-white mb-2 font-semibold">Optimize Visibility</h3>
+<p class="text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Generate high-click-through titles, descriptions, and extract hidden competitor tags in seconds.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 8. WHY CLIPDROP                                                           -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible">
+<div class="text-center space-y-2 mb-12">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Philosophy</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Built to stay simple.</h2>
+<p class="text-sm md:text-base text-[#a1a1a1] max-w-lg mx-auto">No confusing popups, no bloatware, and zero intrusive redirects.</p>
+</div>
+<div class="stagger-group grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 is-visible">
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl space-y-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<span class="material-symbols-outlined text-[32px] text-white">speed</span>
+<h4 class="font-display text-base text-white font-semibold">Lightning Fast</h4>
+<p class="text-xs text-[#a1a1a1] leading-relaxed">Get instantaneous extraction without waiting in artificial throttling queues.</p>
+</div>
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl space-y-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<span class="material-symbols-outlined text-[32px] text-white/80">web</span>
+<h4 class="font-display text-base text-white font-semibold">No Software</h4>
+<p class="text-xs text-[#a1a1a1] leading-relaxed">Runs 100% inside your web browser across macOS, Windows, iOS, and Android.</p>
+</div>
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl space-y-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<span class="material-symbols-outlined text-[32px] text-white/80">clean_hands</span>
+<h4 class="font-display text-base text-white font-semibold">Zero Clutter</h4>
+<p class="text-xs text-[#a1a1a1] leading-relaxed">Clean, distraction-free surfaces without deceptive download buttons or malicious ads.</p>
+</div>
+<div class="stagger-item glass-card-lift bg-white/[0.03] border border-white/[0.08] p-6 rounded-2xl space-y-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+<span class="material-symbols-outlined text-[32px] text-white">movie_filter</span>
+<h4 class="font-display text-base text-white font-semibold">Creator-First</h4>
+<p class="text-xs text-[#a1a1a1] leading-relaxed">Tuned specifically for professional video editors, sound designers, and researchers.</p>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 9. PRICING                                                                -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-16 scroll-reveal is-visible" id="pricing-section">
+<div class="text-center space-y-2 mb-12">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Free For Everyone</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Always Free For You Guys</h2>
+<p class="text-sm md:text-base text-[#a1a1a1] max-w-xl mx-auto">No paywalls, no hidden subscriptions, and no credit card required. Built by creators, for creators.</p>
+</div>
+<div class="max-w-2xl mx-auto">
+<div class="glass-card-lift relative bg-[#111111]/90 border border-white/20 rounded-3xl p-8 md:p-10 flex flex-col justify-between shadow-[0_0_40px_-5px_rgba(255,255,255,0.08),inset_0_1px_1px_rgba(255,255,255,0.1)]">
+<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white text-black font-code text-xs font-bold uppercase tracking-wider shadow-md">100% Free Forever</div>
+<div class="text-center mb-6">
+<h3 class="font-display text-xl text-white font-bold">Creator Free Plan</h3>
+<div class="mt-4 mb-2 flex items-baseline justify-center gap-2">
+<span class="font-display text-4xl md:text-5xl font-extrabold text-white">$0</span>
+<span class="text-sm text-[#737373]">/ forever</span>
+</div>
+<p class="text-xs md:text-sm text-[#a1a1a1]">Full studio-grade suite with zero limitations</p>
+</div>
+<ul class="space-y-3.5 text-xs md:text-sm text-[#a1a1a1] border-t border-white/[0.08] pt-6 pb-2">
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> Unlimited 4K UHD downloads</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> Full video &amp; audio extraction (MP4 &amp; MP3)</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> AI transcription &amp; summary tools</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> Channel analytics &amp; SEO metadata generator</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> No signup or credit card needed</li>
+<li class="flex items-center gap-3"><span class="material-symbols-outlined text-white text-[20px]">check_circle</span> Blazing fast cloud processing</li>
+</ul>
+<a class="nav-focus-downloader w-full mt-8 py-4 rounded-xl bg-white text-black font-semibold text-sm shadow-[0_0_20px_-4px_rgba(255,255,255,0.4)] btn-primary-motion text-center flex items-center justify-center gap-2 cursor-pointer" href="#hero-downloader-container">
+<span>Start Using ClipDrop — It's Free</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 10. FAQ ACCORDION                                                         -->
+<!-- ========================================================================= -->
+<section class="max-w-3xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-14 scroll-reveal is-visible" id="faq-accordion-section">
+<div class="text-center space-y-2 mb-10">
+<span class="font-code text-[11px] text-[#a1a1a1] uppercase tracking-widest font-semibold">Assistance</span>
+<h2 class="font-display text-2xl md:text-3xl text-white font-bold">Frequently Asked Questions</h2>
+<p class="text-sm md:text-base text-[#a1a1a1]">Find answers regarding resolution limits, copyright, and platform capabilities.</p>
+</div>
+<div class="space-y-3" id="faq-accordion">
+<!-- FAQ 1 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>What is ClipDrop?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              ClipDrop is an all-in-one studio utility suite designed for video editors, content creators, and researchers. It allows you to download public YouTube videos up to 4K, convert audio to high-bitrate MP3, analyze video engagement structures, and extract transcripts.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 2 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>Do I need an account to use ClipDrop?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              No. ClipDrop does not require user registration or credit cards for our free downloaders, thumbnail tools, or format utilities. You can paste a link and obtain your files immediately.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 3 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>What video formats and codecs are supported?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              ClipDrop supports standard MP4 (H.264 / AAC) for universal playback on all devices and NLE editing software, WEBM for web efficiency, and MP3 audio streams at up to 320 kbps bitrates.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 4 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>What video quality options are available?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              We extract every available quality track streamed by YouTube, ranging from 360p, 480p, 720p HD, 1080p Full HD, up to 1440p QHD and 2160p (4K UHD) at up to 60 frames per second.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 5 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>Does ClipDrop work seamlessly on mobile?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Yes! ClipDrop is fully responsive and functions flawlessly across mobile Safari (iOS 13+ with direct download management) and Chrome on Android without requiring auxiliary apps.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 6 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>Can I download private or geo-restricted videos?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              No. ClipDrop respects privacy standards and copyright constraints. Only publicly accessible and unlisted videos with standard viewable permissions can be parsed.
+            </div>
+</div>
+</div>
+</div>
+<!-- FAQ 7 -->
+<div class="glass-card-lift border border-white/[0.08] rounded-2xl bg-white/[0.03] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
+<button class="w-full text-left px-6 py-4 flex items-center justify-between text-sm font-medium text-white hover:text-white/80 transition-colors cursor-pointer faq-trigger" type="button">
+<span>Is downloading YouTube content legal?</span>
+<span class="material-symbols-outlined transition-transform duration-300 faq-icon text-[20px]">expand_more</span>
+</button>
+<div class="accordion-wrapper">
+<div class="accordion-inner">
+<div class="px-6 pb-5 pt-1 text-xs md:text-sm text-[#a1a1a1] leading-relaxed">
+              Downloading content for personal offline storage, fair-use commentary, parody, educational reference, or archiving your own creative uploads is broadly recognized. Users are responsible for adhering to copyright laws and respecting original creators' rights.
+            </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 11. FINAL CALL TO ACTION (CTA)                                            -->
+<!-- ========================================================================= -->
+<section class="max-w-5xl mx-auto w-full px-margin-mobile md:px-margin-tablet lg:px-margin py-16 mb-8 scroll-reveal is-visible">
+<div class="glass-card-lift relative rounded-3xl p-10 md:p-14 bg-[#111111]/85 backdrop-blur-2xl border border-white/[0.15] overflow-hidden text-center shadow-[0_20px_50px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.08)]">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-white/[0.06] rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 max-w-2xl mx-auto space-y-4">
+<h2 class="font-display text-3xl md:text-4xl text-white font-extrabold tracking-tight">
+            Your YouTube toolkit, <br/>
+<span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#d4d4d4] to-[#8a8a8a]">all in one place.</span>
+</h2>
+<p class="text-sm md:text-base text-[#a1a1a1] leading-relaxed">
+            Download, analyze, and manage content with simple creator-focused tools built for speed and precision.
+</p>
+<div class="pt-4">
+<a class="nav-focus-downloader inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold text-black bg-white hover:bg-neutral-200 shadow-[0_0_30px_-5px_rgba(255,255,255,0.4)] btn-primary-motion cursor-pointer" href="#hero-downloader-container">
+<span>Explore ClipDrop</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- ========================================================================= -->
+<!-- ========================================================================= -->
+<!-- CLIENT SCRIPT: PRIMARY DOWNLOADER ENGINE & REAL API INTEGRATION           -->
+<!-- ========================================================================= -->
+<script>
+  (function() {
+    'use strict';
+
+    // 1. Scroll Reveal Observer
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.scroll-reveal, .stagger-group').forEach(el => {
+        revealObserver.observe(el);
+      });
+    } else {
+      document.querySelectorAll('.scroll-reveal, .stagger-group').forEach(el => {
+        el.classList.add('is-visible');
+      });
+    }
+
+    // 2. Global Navigation: Smooth scroll to Hero Downloader & Focus Input
+    const dockBox = document.getElementById('dock-input-box');
+    const heroInput = document.getElementById('hero-url-input');
+    const heroClearBtn = document.getElementById('hero-clear-btn');
+    const heroSubmitBtn = document.getElementById('hero-submit-btn');
+    const heroBtnLabel = document.getElementById('hero-btn-label');
+    const heroBtnIcon = document.getElementById('hero-btn-icon');
+    const errorMsg = document.getElementById('url-error-msg');
+    const errorText = document.getElementById('url-error-text');
+    const loadingState = document.getElementById('hero-loading-state');
+    const resultCard = document.getElementById('hero-result-card');
+    const resetBtn = document.getElementById('reset-downloader-btn');
+
+    document.querySelectorAll('.nav-focus-downloader').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          if (heroInput) {
+            heroInput.focus();
+            heroInput.select();
+          }
+          if (dockBox) {
+            dockBox.classList.remove('pulse-focus-ring');
+            void dockBox.offsetWidth;
+            dockBox.classList.add('pulse-focus-ring');
+            setTimeout(() => dockBox.classList.remove('pulse-focus-ring'), 2400);
+          }
+        }, 350);
+      });
+    });
+
+    // Configure API base: allows overriding via window.CLIPDROP_API_URL, or auto-detects localhost / production
+    const API_BASE = window.CLIPDROP_API_URL || (
+      (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? (window.location.port === '5000' ? '' : 'http://127.0.0.1:5000')
+        : ''
+    );
+
+    // 3. Robust YouTube URL normalizer: supports watch?v=, watch?*v=*, shorts/, live/, embed/, youtu.be/, mobile, music, and raw IDs
+    const normalizeYouTubeUrl = (url) => {
+      if (!url || typeof url !== 'string') return null;
+      const trimmed = url.trim();
+      if (/^[\w-]{11}$/.test(trimmed)) {
+        return `https://www.youtube.com/watch?v=${trimmed}`;
+      }
+      let testUrl = trimmed;
+      if (!testUrl.startsWith('http://') && !testUrl.startsWith('https://')) {
+        testUrl = 'https://' + testUrl;
+      }
+      const m = testUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|live|shorts)\/|.*[?&]v=)|youtu\.be\/)([\w-]{11})/i);
+      if (m) {
+        return `https://www.youtube.com/watch?v=${m[1]}`;
+      }
+      return null;
+    };
+
+    const triggerInputShake = () => {
+      if (!dockBox) return;
+      dockBox.classList.remove('input-shake');
+      void dockBox.offsetWidth;
+      dockBox.classList.add('input-shake');
+      setTimeout(() => dockBox.classList.remove('input-shake'), 400);
+    };
+
+    const showError = (msg) => {
+      triggerInputShake();
+      if (errorText) errorText.innerText = msg;
+      if (errorMsg) errorMsg.classList.remove('hidden');
+    };
+
+    const hideError = () => {
+      if (errorMsg) errorMsg.classList.add('hidden');
+    };
+
+    // State
+    let currentVideoData = null;
+    let isExtracting = false;
+    let activeJob = { id: null, type: null, interval: null, filename: null };
+
+    // Reset Flow
+    const resetDownloader = () => {
+      if (heroInput) heroInput.value = '';
+      if (heroClearBtn) heroClearBtn.classList.add('hidden');
+      hideError();
+      if (loadingState) loadingState.classList.add('hidden');
+      if (resultCard) resultCard.classList.add('hidden');
+      if (progressBox) progressBox.classList.add('hidden');
+      if (activeJob.interval) {
+        clearInterval(activeJob.interval);
+        activeJob.interval = null;
+      }
+      activeJob = { id: null, type: null, interval: null, filename: null };
+      currentVideoData = null;
+      isExtracting = false;
+
+      if (heroSubmitBtn) heroSubmitBtn.disabled = false;
+      if (heroBtnLabel) heroBtnLabel.innerText = 'Download';
+      if (heroBtnIcon) {
+        heroBtnIcon.innerText = 'arrow_forward';
+        heroBtnIcon.classList.remove('animate-spin');
+      }
+
+      const dlVideoBtn = document.getElementById('dl-video-btn');
+      if (dlVideoBtn) dlVideoBtn.disabled = false;
+      const dlAudioBtn = document.getElementById('dl-audio-btn');
+      if (dlAudioBtn) dlAudioBtn.disabled = false;
+
+      if (heroInput) heroInput.focus();
+    };
+
+    if (resetBtn) resetBtn.addEventListener('click', resetDownloader);
+    if (heroClearBtn) heroClearBtn.addEventListener('click', resetDownloader);
+
+    if (heroInput) {
+      heroInput.addEventListener('input', () => {
+        const val = heroInput.value.trim();
+        if (heroClearBtn) {
+          if (val) heroClearBtn.classList.remove('hidden');
+          else heroClearBtn.classList.add('hidden');
+        }
+        hideError();
+      });
+
+      heroInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          fetchVideoMetadata();
+        }
+      });
+    }
+
+    if (heroSubmitBtn) {
+      heroSubmitBtn.addEventListener('click', fetchVideoMetadata);
+    }
+
+    // 4. Fetch Real Video Metadata via Backend
+    async function fetchVideoMetadata() {
+      if (isExtracting) return;
+      const rawUrl = heroInput ? heroInput.value.trim() : '';
+
+      if (!rawUrl) {
+        showError('Please enter a valid YouTube URL.');
+        if (heroInput) heroInput.focus();
+        return;
+      }
+
+      const normalized = normalizeYouTubeUrl(rawUrl);
+      if (!normalized) {
+        showError('Please enter a valid YouTube URL.');
+        if (heroInput) heroInput.focus();
+        return;
+      }
+
+      hideError();
+      isExtracting = true;
+
+      if (heroSubmitBtn) heroSubmitBtn.disabled = true;
+      if (heroBtnLabel) heroBtnLabel.innerText = 'Analyzing...';
+      if (heroBtnIcon) {
+        heroBtnIcon.innerText = 'sync';
+        heroBtnIcon.classList.add('animate-spin');
+      }
+
+      if (resultCard) resultCard.classList.add('hidden');
+      if (loadingState) loadingState.classList.remove('hidden');
+      if (progressBox) progressBox.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/info`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: rawUrl })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          const err = (data && data.error && data.error.message) || data.error || "We couldn't process this video. Please try again.";
+          showError(err);
+          if (loadingState) loadingState.classList.add('hidden');
+          return;
+        }
+
+        // Successfully loaded real video data
+        currentVideoData = { ...data, requestUrl: data.canonical_url || rawUrl };
+        populateResultCard(currentVideoData);
+
+        if (loadingState) loadingState.classList.add('hidden');
+        if (resultCard) {
+          resultCard.classList.remove('hidden');
+          resultCard.classList.remove('fade-in-up');
+          void resultCard.offsetWidth;
+          resultCard.classList.add('fade-in-up');
+        }
+      } catch (err) {
+        console.error("Extraction error:", err);
+        showError('Could not reach the server. Please ensure python app.py is running on port 5000.');
+        if (loadingState) loadingState.classList.add('hidden');
+      } finally {
+        isExtracting = false;
+        if (heroSubmitBtn) heroSubmitBtn.disabled = false;
+        if (heroBtnLabel) heroBtnLabel.innerText = 'Download';
+        if (heroBtnIcon) {
+          heroBtnIcon.innerText = 'arrow_forward';
+          heroBtnIcon.classList.remove('animate-spin');
+        }
+      }
+    }
+
+    // 5. Populate Result Card with Real Data
+    function populateResultCard(data) {
+      // Title
+      const titleEl = document.getElementById('res-video-title');
+      if (titleEl) titleEl.innerText = data.title || 'YouTube Video';
+
+      // Channel
+      const channelEl = document.getElementById('res-video-channel');
+      if (channelEl) {
+        channelEl.innerHTML = `${data.channel || 'Channel'} <span class="material-symbols-outlined text-[15px] text-white" style="font-variation-settings: 'FILL' 1;">verified</span>`;
+      }
+
+      // Views
+      const viewsEl = document.getElementById('res-video-views');
+      if (viewsEl) viewsEl.innerText = data.views_str || '0 views';
+
+      // Duration
+      const durationEl = document.getElementById('res-video-duration');
+      if (durationEl) durationEl.innerText = data.duration_str || '0:00';
+
+      // FPS
+      const fpsEl = document.getElementById('res-video-fps');
+      if (fpsEl) fpsEl.innerText = `Original FPS: ${data.original_fps || 60}`;
+
+      // Thumbnail
+      const thumbEl = document.getElementById('res-video-thumb');
+      if (thumbEl) {
+        thumbEl.src = data.thumbnail || '';
+        thumbEl.alt = data.title || 'Video Preview';
+      }
+
+      // Max Resolution Badge
+      const maxResEl = document.getElementById('res-video-max-res');
+      if (maxResEl && data.video_qualities && data.video_qualities.length > 0) {
+        const topH = data.video_qualities[0].height;
+        if (topH >= 2160) maxResEl.innerText = '4K UHD';
+        else if (topH >= 1440) maxResEl.innerText = '1440p QHD';
+        else if (topH >= 1080) maxResEl.innerText = '1080p FHD';
+        else maxResEl.innerText = `${topH}p HD`;
+      }
+
+      // Populate Video Qualities
+      const videoList = document.getElementById('video-quality-list');
+      if (videoList) {
+        videoList.innerHTML = '';
+        const qualities = data.video_qualities || [];
+        qualities.forEach((q, idx) => {
+          const isDefault = idx === 0;
+          const label = document.createElement('label');
+          label.className = `format-option-row flex items-center justify-between p-2.5 rounded-xl cursor-pointer ${
+            isDefault ? 'bg-white/[0.1] border border-white/40' : 'bg-white/[0.02] border border-white/[0.06]'
+          }`;
+          label.innerHTML = `
+            <div class="flex items-center gap-3">
+              <input ${isDefault ? 'checked' : ''} class="accent-white w-4 h-4 cursor-pointer" name="video_quality" type="radio" value="${q.short}" data-size="${q.size_str}"/>
+              <span class="text-xs ${isDefault ? 'font-semibold text-white' : 'font-medium text-[#d4d4d4]'}">${q.label}</span>
+            </div>
+            <span class="font-code text-xs ${isDefault ? 'text-white font-semibold' : 'text-[#737373]'}">${q.size_str}</span>
+          `;
+          videoList.appendChild(label);
+        });
+
+        const firstQ = qualities[0];
+        const dlVideoText = document.getElementById('dl-video-text');
+        if (dlVideoText && firstQ) {
+          dlVideoText.innerText = `Download MP4 (${firstQ.size_str})`;
+        }
+      }
+
+      // Populate Audio Bitrates
+      const audioList = document.getElementById('audio-quality-list');
+      if (audioList) {
+        audioList.innerHTML = '';
+        const bitrates = data.audio_bitrates || [];
+        bitrates.forEach((ab, idx) => {
+          const isDefault = idx === 0;
+          const label = document.createElement('label');
+          label.className = `format-option-row flex items-center justify-between p-2.5 rounded-xl cursor-pointer ${
+            isDefault ? 'bg-white/[0.1] border border-white/40' : 'bg-white/[0.02] border border-white/[0.06]'
+          }`;
+          label.innerHTML = `
+            <div class="flex items-center gap-3">
+              <input ${isDefault ? 'checked' : ''} class="accent-white w-4 h-4 cursor-pointer" name="audio_quality" type="radio" value="${ab.bitrate}" data-size="${ab.size_str}"/>
+              <span class="text-xs ${isDefault ? 'font-semibold text-white' : 'font-medium text-[#d4d4d4]'}">${ab.label}</span>
+            </div>
+            <span class="font-code text-xs ${isDefault ? 'text-white font-semibold' : 'text-[#737373]'}">${ab.size_str}</span>
+          `;
+          audioList.appendChild(label);
+        });
+
+        const firstAb = bitrates[0];
+        const dlAudioText = document.getElementById('dl-audio-text');
+        if (dlAudioText && firstAb) {
+          dlAudioText.innerText = `Download MP3 (${firstAb.size_str})`;
+        }
+      }
+
+      // Bind dynamic format selector changes
+      bindRadioSelection('video-quality-list', 'dl-video-text', 'Download MP4');
+      bindRadioSelection('audio-quality-list', 'dl-audio-text', 'Download MP3');
+
+      // Reset download buttons
+      const dlVideoBtn = document.getElementById('dl-video-btn');
+      if (dlVideoBtn) {
+        dlVideoBtn.disabled = false;
+        delete dlVideoBtn.dataset.readyJobId;
+      }
+      const dlAudioBtn = document.getElementById('dl-audio-btn');
+      if (dlAudioBtn) {
+        dlAudioBtn.disabled = false;
+        delete dlAudioBtn.dataset.readyJobId;
+      }
+    }
+
+    // 6. Interactive Radio Selection with Dynamic Button Labels
+    const bindRadioSelection = (containerId, btnTextId, formatLabel) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const labels = container.querySelectorAll('.format-option-row');
+      labels.forEach(label => {
+        const radio = label.querySelector('input[type="radio"]');
+        if (!radio) return;
+        radio.addEventListener('change', () => {
+          labels.forEach(l => {
+            l.classList.remove('bg-white/[0.1]', 'border-white/40');
+            l.classList.add('bg-white/[0.02]', 'border-white/[0.06]');
+            const txt = l.querySelector('.text-xs');
+            if (txt) {
+              txt.classList.remove('text-white', 'font-semibold');
+              txt.classList.add('text-[#d4d4d4]', 'font-medium');
+            }
+            const sz = l.querySelector('.font-code');
+            if (sz) {
+              sz.classList.remove('text-white', 'font-semibold');
+              sz.classList.add('text-[#737373]');
+            }
+          });
+
+          if (radio.checked) {
+            label.classList.add('bg-white/[0.1]', 'border-white/40');
+            label.classList.remove('bg-white/[0.02]', 'border-white/[0.06]');
+            const activeTxt = label.querySelector('.text-xs');
+            if (activeTxt) {
+              activeTxt.classList.add('text-white', 'font-semibold');
+              activeTxt.classList.remove('text-[#d4d4d4]', 'font-medium');
+            }
+            const activeSz = label.querySelector('.font-code');
+            if (activeSz) {
+              activeSz.classList.add('text-white', 'font-semibold');
+              activeSz.classList.remove('text-[#737373]');
+            }
+
+            const sizeStr = radio.dataset.size || (activeSz ? activeSz.innerText.trim() : '');
+            const btnSpan = document.getElementById(btnTextId);
+            if (btnSpan && sizeStr) {
+              btnSpan.innerText = `${formatLabel} (${sizeStr})`;
+            }
+
+            // Clear ready job state if quality changes
+            const btn = btnTextId === 'dl-video-text' ? document.getElementById('dl-video-btn') : document.getElementById('dl-audio-btn');
+            if (btn && btn.dataset.readyJobId) {
+              delete btn.dataset.readyJobId;
+            }
+          }
+        });
+      });
+    };
+
+    // 7. Real Media Download Pipeline & Live Progress Tracking
+    const progressBox = document.getElementById('download-progress-box');
+    const progressBar = document.getElementById('progress-bar-fill');
+    const progressPercent = document.getElementById('progress-percent-label');
+    const progressTitle = document.getElementById('progress-action-title');
+    const progressSubtext = document.getElementById('progress-subtext');
+    const progressSpeed = document.getElementById('progress-speed');
+    const progressSpinnerIcon = document.getElementById('progress-spinner-icon');
+
+    const triggerBrowserDownload = (fileUrl, filename) => {
+      const a = document.createElement('a');
+      a.href = fileUrl;
+      if (filename) a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => document.body.removeChild(a), 500);
+    };
+
+    async function startMediaDownload(dlType, quality, buttonEl, originalBtnText, iconName) {
+      if (!currentVideoData || !currentVideoData.requestUrl) {
+        showError('Please load a valid YouTube video first.');
+        return;
+      }
+
+      if (activeJob.interval) {
+        clearInterval(activeJob.interval);
+        activeJob.interval = null;
+      }
+
+      // UI Download Starting State
+      if (buttonEl) {
+        buttonEl.disabled = true;
+        const textSpan = buttonEl.querySelector('span:not(.material-symbols-outlined)');
+        const iconSpan = buttonEl.querySelector('.material-symbols-outlined');
+        if (textSpan) textSpan.innerText = 'Preparing media...';
+        if (iconSpan) {
+          iconSpan.innerText = 'sync';
+          iconSpan.classList.add('animate-spin');
+        }
+      }
+
+      if (progressBox) {
+        progressBox.classList.remove('hidden');
+        if (progressBar) progressBar.style.width = '12%';
+        if (progressPercent) progressPercent.innerText = '12%';
+        if (progressTitle) progressTitle.innerText = dlType === 'audio' ? 'Synthesizing MP3 Audio Stream...' : 'Synthesizing MP4 Video Stream...';
+        if (progressSubtext) progressSubtext.innerText = 'Connecting to download engine & solving challenge...';
+        if (progressSpeed) progressSpeed.innerText = 'Processing';
+        if (progressSpinnerIcon) {
+          progressSpinnerIcon.innerText = 'sync';
+          progressSpinnerIcon.classList.add('animate-spin');
+        }
+      }
+
+      // Smooth indeterminate progress pulse while server processes FFmpeg & download
+      let simulatedPct = 12;
+      activeJob.interval = setInterval(() => {
+        if (simulatedPct < 85) {
+          simulatedPct += Math.max(1, Math.floor((85 - simulatedPct) * 0.08));
+          if (progressBar) progressBar.style.width = `${simulatedPct}%`;
+          if (progressPercent) progressPercent.innerText = `${simulatedPct}%`;
+          if (progressSubtext) {
+            if (simulatedPct > 60) {
+              progressSubtext.innerText = 'Merging & packaging streams with FFmpeg...';
+            } else if (simulatedPct > 35) {
+              progressSubtext.innerText = 'Extracting media streams from YouTube...';
+            }
+          }
+        }
+      }, 500);
+
+      try {
+        const response = await fetch(`${API_BASE}/api/download`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url: currentVideoData.requestUrl,
+            type: dlType,
+            quality: quality
+          })
+        });
+
+        if (!response.ok) {
+          let errMessage = "Download failed. Please try again.";
+          try {
+            const errData = await response.json();
+            if (errData && errData.error && errData.error.message) {
+              errMessage = errData.error.message;
+            } else if (errData && errData.error) {
+              errMessage = typeof errData.error === 'string' ? errData.error : JSON.stringify(errData.error);
+            }
+          } catch (jsonErr) {
+            // Not JSON
+          }
+          throw new Error(errMessage);
+        }
+
+        // Server finished generating media, now stream chunks or blob
+        clearInterval(activeJob.interval);
+        activeJob.interval = null;
+
+        if (progressSubtext) progressSubtext.innerText = 'Receiving media payload...';
+        if (progressBar) progressBar.style.width = '88%';
+        if (progressPercent) progressPercent.innerText = '88%';
+
+        // Extract filename from Content-Disposition header
+        let filename = `${currentVideoData.title || 'ClipDrop_media'}.${dlType === 'audio' ? 'mp3' : 'mp4'}`;
+        const disposition = response.headers.get('Content-Disposition') || '';
+        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+        const asciiMatch = disposition.match(/filename="?([^";]+)"?/i);
+        if (utf8Match && utf8Match[1]) {
+          try { filename = decodeURIComponent(utf8Match[1]); } catch(e) {}
+        } else if (asciiMatch && asciiMatch[1]) {
+          filename = asciiMatch[1];
+        }
+
+        // Read stream as Blob
+        const blob = await response.blob();
+        const fileUrl = URL.createObjectURL(blob);
+
+        if (progressBar) progressBar.style.width = '100%';
+        if (progressPercent) progressPercent.innerText = '100%';
+        if (progressTitle) progressTitle.innerText = '✓ Download ready';
+        if (progressSubtext) progressSubtext.innerText = 'Payload dispatched to browser download manager.';
+        if (progressSpeed) progressSpeed.innerText = `${(blob.size / (1024 * 1024)).toFixed(1)} MB`;
+        if (progressSpinnerIcon) {
+          progressSpinnerIcon.classList.remove('animate-spin');
+          progressSpinnerIcon.innerText = 'check_circle';
+        }
+
+        // Trigger native browser download
+        triggerBrowserDownload(fileUrl, filename);
+        setTimeout(() => URL.revokeObjectURL(fileUrl), 60000);
+
+        // Update button state
+        if (buttonEl) {
+          buttonEl.disabled = false;
+          const textSpan = buttonEl.querySelector('span:not(.material-symbols-outlined)');
+          const iconSpan = buttonEl.querySelector('.material-symbols-outlined');
+          if (textSpan) textSpan.innerText = 'Download again';
+          if (iconSpan) {
+            iconSpan.classList.remove('animate-spin');
+            iconSpan.innerText = 'refresh';
+          }
+        }
+
+      } catch (err) {
+        if (activeJob.interval) clearInterval(activeJob.interval);
+        activeJob.interval = null;
+
+        if (progressBox) {
+          if (progressTitle) progressTitle.innerText = 'Download error';
+          if (progressSubtext) progressSubtext.innerText = err.message || "We couldn't process this video. Please try again.";
+          if (progressSpinnerIcon) {
+            progressSpinnerIcon.classList.remove('animate-spin');
+            progressSpinnerIcon.innerText = 'error';
+          }
+        }
+        if (buttonEl) {
+          buttonEl.disabled = false;
+          const textSpan = buttonEl.querySelector('span:not(.material-symbols-outlined)');
+          const iconSpan = buttonEl.querySelector('.material-symbols-outlined');
+          if (textSpan) textSpan.innerText = originalBtnText;
+          if (iconSpan) {
+            iconSpan.classList.remove('animate-spin');
+            iconSpan.innerText = iconName;
+          }
+        }
+      }
+    }
+
+    // Attach Video and Audio Download Handlers
+    const dlVideoBtn = document.getElementById('dl-video-btn');
+    if (dlVideoBtn) {
+      dlVideoBtn.addEventListener('click', function() {
+        const selectedRadio = document.querySelector('input[name="video_quality"]:checked');
+        const quality = selectedRadio ? selectedRadio.value : '1080p';
+        const currentText = document.getElementById('dl-video-text').innerText;
+        startMediaDownload('video', quality, dlVideoBtn, currentText, 'download');
+      });
+    }
+
+    const dlAudioBtn = document.getElementById('dl-audio-btn');
+    if (dlAudioBtn) {
+      dlAudioBtn.addEventListener('click', function() {
+        const selectedRadio = document.querySelector('input[name="audio_quality"]:checked');
+        const bitrate = selectedRadio ? selectedRadio.value : '320';
+        const currentText = document.getElementById('dl-audio-text').innerText;
+        startMediaDownload('audio', bitrate, dlAudioBtn, currentText, 'music_note');
+      });
+    }
+
+    // 8. Share Link Dropdown Popover & Toast Copy Feedback
+    const shareBtn = document.getElementById('share-btn');
+    const sharePopover = document.getElementById('share-popover');
+    const copyShareUrl = document.getElementById('copy-share-url');
+    const copyBadge = document.getElementById('copy-badge');
+    const copyTextMain = document.getElementById('copy-text-main');
+
+    const copyAssetUrl = document.getElementById('copy-asset-url');
+    const assetCopyBadge = document.getElementById('asset-copy-badge');
+    const copyAssetLabel = document.getElementById('copy-asset-label');
+
+    const copyQrUrl = document.getElementById('copy-qr-url');
+    const qrCopyBadge = document.getElementById('qr-copy-badge');
+    const copyQrLabel = document.getElementById('copy-qr-label');
+
+    if (shareBtn && sharePopover) {
+      shareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sharePopover.classList.toggle('popover-active');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!sharePopover.contains(e.target) && e.target !== shareBtn) {
+          sharePopover.classList.remove('popover-active');
+        }
+      });
+
+      const setupCopyButton = (btn, labelEl, badgeEl, getTextCallback) => {
+        if (!btn || !badgeEl || !labelEl) return;
+        btn.addEventListener('click', () => {
+          const textToCopy = getTextCallback();
+          navigator.clipboard.writeText(textToCopy).catch(() => {});
+          labelEl.classList.add('hidden');
+          badgeEl.classList.remove('hidden');
+          badgeEl.classList.add('inline-flex');
+
+          setTimeout(() => {
+            badgeEl.classList.remove('inline-flex');
+            badgeEl.classList.add('hidden');
+            labelEl.classList.remove('hidden');
+            sharePopover.classList.remove('popover-active');
+          }, 1200);
+        });
+      };
+
+      setupCopyButton(copyShareUrl, copyTextMain, copyBadge, () => {
+        return (heroInput && heroInput.value.trim()) || window.location.href;
+      });
+
+      setupCopyButton(copyAssetUrl, copyAssetLabel, assetCopyBadge, () => {
+        const vidId = currentVideoData ? currentVideoData.id : 'dQw4w9WgXcQ';
+        return `<iframe src="https://www.youtube-nocookie.com/embed/${vidId}" width="100%" height="450" frameborder="0" allowfullscreen></iframe>`;
+      });
+
+      setupCopyButton(copyQrUrl, copyQrLabel, qrCopyBadge, () => {
+        return (heroInput && heroInput.value.trim()) || window.location.href;
+      });
+    }
+
+    // 9. FAQ Accordion: Smooth CSS Grid Expansion & Icon Flip
+    const faqTriggers = document.querySelectorAll('.faq-trigger');
+    faqTriggers.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const wrapper = btn.nextElementSibling;
+        const icon = btn.querySelector('.faq-icon');
+        const isCurrentlyOpen = wrapper.classList.contains('is-expanded');
+
+        document.querySelectorAll('.accordion-wrapper').forEach(w => w.classList.remove('is-expanded'));
+        document.querySelectorAll('.faq-icon').forEach(i => i.style.transform = 'rotate(0deg)');
+
+        if (!isCurrentlyOpen) {
+          wrapper.classList.add('is-expanded');
+          if (icon) icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+
+  })();
+</script>
+<!-- ========================================================================= -->
+<!-- FOOTER                                                                    -->
+<!-- ========================================================================= -->
+<footer class="w-full bg-[#050505] border-t border-white/[0.06] pt-space-3xl pb-space-xl text-[#a1a1a1]">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-xl pb-space-2xl border-b border-white/[0.06]">
+<div class="lg:col-span-3 space-y-space-md">
+<div class="flex items-center gap-2.5">
+<img alt="ClipDrop Logo" class="h-7 w-7 object-contain rounded-lg border border-white/20 bg-[#141414]" src="logo.png" onerror="this.onerror=null; this.src='logo.svg';"/>
+<span class="font-display text-lg tracking-tight text-white font-semibold flex items-center">
+            ClipDrop
+            <span class="inline-block w-1.5 h-1.5 rounded-full ml-1.5 bg-white/70"></span>
+</span>
+</div>
+<p class="text-xs text-[#a1a1a1] max-w-xs leading-relaxed">Simple tools for YouTube creators. Designed for precision, speed, and effortless studio workflows.</p>
+</div>
+<div class="lg:col-span-9 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-space-lg">
+<div class="space-y-space-sm">
+<div class="font-code text-xs uppercase tracking-widest text-white font-medium">Tools</div>
+<ul class="space-y-2 text-xs">
+<li><a class="nav-focus-downloader nav-link-animated text-[#a1a1a1] hover:text-white" data-path="video-downloader" href="#hero-downloader-container">Video Downloader</a></li>
+<li><a class="nav-focus-downloader nav-link-animated text-[#a1a1a1] hover:text-white" data-path="youtube-to-mp3" href="#hero-downloader-container">YouTube to MP3</a></li>
+<li><a class="nav-focus-downloader nav-link-animated text-[#a1a1a1] hover:text-white" data-path="shorts-downloader" href="#hero-downloader-container">Shorts Downloader</a></li>
+<li><a class="nav-focus-downloader nav-link-animated text-[#a1a1a1] hover:text-white" data-path="thumbnail-downloader" href="#hero-downloader-container">Thumbnail Downloader</a></li>
+</ul>
+</div>
+<div class="space-y-space-sm">
+<div class="font-code text-xs uppercase tracking-widest text-white font-medium">Creator Tools</div>
+<ul class="space-y-2 text-xs">
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="video-analyzer" href="#">Video Analyzer</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="transcript-generator" href="#">Transcript Generator</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="subtitle-downloader" href="#">Subtitle Downloader</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="video-summary" href="#">Video Summary</a></li>
+</ul>
+</div>
+<div class="space-y-space-sm">
+<div class="font-code text-xs uppercase tracking-widest text-white font-medium">SEO &amp; Analytics</div>
+<ul class="space-y-2 text-xs">
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="title-generator" href="#">Title Generator</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="tag-extractor" href="#">Tag Extractor</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="channel-id-finder" href="#">Channel ID Finder</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="monetization-checker" href="#">Monetization Checker</a></li>
+</ul>
+</div>
+<div class="space-y-space-sm">
+<div class="font-code text-xs uppercase tracking-widest text-white font-medium">Company</div>
+<ul class="space-y-2 text-xs">
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="about" href="#">About</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="pricing" href="#pricing-section">Always Free</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="contact" href="#">Contact</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="faq" href="#faq-accordion-section">FAQ</a></li>
+</ul>
+</div>
+<div class="space-y-space-sm">
+<div class="font-code text-xs uppercase tracking-widest text-white font-medium">Legal</div>
+<ul class="space-y-2 text-xs">
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="terms-of-service" href="#">Terms of Service</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="privacy-policy" href="#">Privacy Policy</a></li>
+<li><a class="nav-link-animated text-[#a1a1a1] hover:text-white" data-path="copyright" href="#">Copyright</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md text-xs">
+<div class="text-[#737373]">© 2026 ClipDrop. All rights reserved.</div>
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-2 text-[#a1a1a1]">
+<span class="w-2 h-2 rounded-full bg-white"></span>
+<span>Systems Operational</span>
+</div>
+<div class="flex items-center gap-2">
+<a class="text-[#737373] hover:text-white transition-colors p-1" href="#"><span class="material-symbols-outlined text-[18px]">public</span></a>
+<a class="text-[#737373] hover:text-white transition-colors p-1" href="#"><span class="material-symbols-outlined text-[18px]">chat_bubble</span></a>
+<a class="text-[#737373] hover:text-white transition-colors p-1" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span></a>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
