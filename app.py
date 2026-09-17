@@ -470,8 +470,8 @@ def map_ytdlp_error(exc: Exception) -> Tuple[str, str, int]:
         return "VIDEO_PRIVATE", "This video is private and cannot be downloaded.", 404
     elif "deleted" in msg or "does not exist" in msg or "removed" in msg:
         return "VIDEO_NOT_FOUND", "This video has been deleted or does not exist.", 404
-    elif "sign in to confirm you're not a bot" in msg or "confirm your age" in msg or "sign in" in msg:
-        return "BOT_CHALLENGE", "YouTube bot challenge detected. The challenge solver could not complete verification.", 403
+    elif "sign in to confirm you're not a bot" in msg or "confirm you're not a bot" in msg or "bot challenge" in msg:
+        return "BOT_CHALLENGE", "YouTube bot challenge encountered. Please try again or provide cookies.", 403
     elif "age-restricted" in msg or "age restricted" in msg:
         return "AGE_RESTRICTED", "This video is age-restricted and requires YouTube login.", 403
     elif "geo" in msg or "country" in msg or "not available in your country" in msg:
@@ -608,18 +608,13 @@ def get_video_info():
 
     ydl_opts = build_ydl_opts({'skip_download': True, 'extract_flat': False})
 
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(canonical_url, download=False)
-            if not info:
-                return json_error("VIDEO_UNAVAILABLE", "This video could not be retrieved.", 404)
-    except yt_dlp.utils.DownloadError as e:
-        code, msg, status = map_ytdlp_error(e)
-        logger.warning(f"DownloadError extracting metadata for {canonical_url}: {code} - {e}")
-        return json_error(code, msg, status, details=str(e))
-    except Exception as e:
-        logger.exception(f"Unexpected error extracting metadata for {canonical_url}")
-        return json_error("EXTRACTION_ERROR", "Unable to process video information.", 500, details=str(e))
+    info, err = extract_info_with_fallback(canonical_url, ydl_opts, download=False)
+    if not info:
+        if err and isinstance(err, yt_dlp.utils.DownloadError):
+            code, msg, status = map_ytdlp_error(err)
+            logger.warning(f"DownloadError extracting metadata for {canonical_url}: {code} - {err}")
+            return json_error(code, msg, status, details=str(err))
+        return json_error("VIDEO_UNAVAILABLE", "This video could not be retrieved.", 404, details=str(err) if err else None)
 
     duration = info.get('duration', 0)
     formats = info.get('formats', [])
@@ -736,17 +731,16 @@ def download_media():
     logger.info(f"Starting serverless download: {canonical_url} (type={dl_type}, quality={quality}) in {temp_dir}")
 
     try:
-        # Pre-extract video title
+        # Pre-extract video title with anti-bot fallback
         title = "ClipDrop_Media"
         ydl_opts_meta = build_ydl_opts({'skip_download': True})
-        with yt_dlp.YoutubeDL(ydl_opts_meta) as ydl:
-            pre_info = ydl.extract_info(canonical_url, download=False)
-            if pre_info:
-                title = pre_info.get('title', 'ClipDrop_Media')
-                dur = pre_info.get('duration', 0)
-                if dur > 1800: # 30 min cap on serverless
-                    shutil.rmtree(temp_dir, ignore_errors=True)
-                    return json_error("DURATION_EXCEEDED", "This video exceeds the maximum allowable serverless duration (30 minutes).", 400)
+        pre_info, _ = extract_info_with_fallback(canonical_url, ydl_opts_meta, download=False)
+        if pre_info:
+            title = pre_info.get('title', 'ClipDrop_Media')
+            dur = pre_info.get('duration', 0)
+            if dur > 1800: # 30 min cap on serverless
+                shutil.rmtree(temp_dir, ignore_errors=True)
+                return json_error("DURATION_EXCEEDED", "This video exceeds the maximum allowable serverless duration (30 minutes).", 400)
 
         out_filepath: Optional[str] = None
         out_filename: Optional[str] = None
@@ -768,8 +762,9 @@ def download_media():
                 }],
             })
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([canonical_url])
+            _, dl_err = extract_info_with_fallback(canonical_url, ydl_opts, download=True)
+            if dl_err and not any(f.endswith('.mp3') for f in os.listdir(temp_dir)):
+                raise dl_err
 
             extracted_mp3 = os.path.join(temp_dir, 'raw.mp3')
             if os.path.exists(extracted_mp3):
@@ -799,8 +794,9 @@ def download_media():
                 'merge_output_format': 'mp4',
             })
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([canonical_url])
+            _, dl_err = extract_info_with_fallback(canonical_url, ydl_opts, download=True)
+            if dl_err and not any(f.endswith(('.mp4', '.mkv', '.webm')) for f in os.listdir(temp_dir)):
+                raise dl_err
 
             merged_mp4 = os.path.join(temp_dir, 'video.mp4')
             if os.path.exists(merged_mp4):
