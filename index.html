@@ -2,9 +2,9 @@
 
 <html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>ClipDrop — YouTube Creator Toolkit &amp; Video Downloader</title>
-<link rel="icon" type="image/png" href="logo.png"/>
 <link rel="icon" type="image/svg+xml" href="logo.svg"/>
-<link rel="apple-touch-icon" href="logo.png"/>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="apple-touch-icon" href="logo.svg"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
@@ -342,7 +342,7 @@ tailwind.config = {
 <div class="h-20 max-w-[1200px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin flex items-center justify-between gap-space-md">
 <div class="flex items-center gap-space-sm shrink-0">
 <a class="flex items-center gap-2.5 focus:outline-none group" data-path="home" href="#">
-<img alt="ClipDrop Logo" class="h-8 w-8 object-contain rounded-lg border border-white/20 bg-[#141414] transition-all duration-300 group-hover:scale-105 group-hover:border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.08)]" src="logo.png" onerror="this.onerror=null; this.src='logo.svg';"/>
+<img alt="ClipDrop Logo" class="h-8 w-8 object-contain rounded-lg border border-white/20 bg-[#141414] transition-all duration-300 group-hover:scale-105 group-hover:border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.08)]" src="logo.svg" onerror="this.onerror=null; this.src='clipdrop-official.svg';"/>
 <span class="font-display text-xl tracking-tight text-white font-semibold flex items-center">
           ClipDrop
           <span class="inline-block w-1.5 h-1.5 rounded-full ml-1.5 bg-white/70"></span>
@@ -1385,11 +1385,32 @@ tailwind.config = {
           body: JSON.stringify({ url: rawUrl })
         });
 
-        const data = await response.json();
+        let data = null;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            data = await response.json();
+          } catch (jsonErr) {
+            console.warn("JSON parse error:", jsonErr);
+          }
+        }
 
         if (!response.ok) {
-          const err = (data && data.error && data.error.message) || data.error || "We couldn't process this video. Please try again.";
+          let err = "We couldn't process this video. Please try again.";
+          if (data && data.error) {
+            err = (data.error.message || (typeof data.error === 'string' ? data.error : JSON.stringify(data.error)));
+          } else if (response.status === 404) {
+            err = "Backend API route not found (404). Please ensure the backend server is running.";
+          } else if (response.status >= 500) {
+            err = `Server error (${response.status}). Please try again in a few moments.`;
+          }
           showError(err);
+          if (loadingState) loadingState.classList.add('hidden');
+          return;
+        }
+
+        if (!data) {
+          showError("Could not reach the server. Please ensure python app.py is running on port 5000.");
           if (loadingState) loadingState.classList.add('hidden');
           return;
         }
@@ -1407,7 +1428,10 @@ tailwind.config = {
         }
       } catch (err) {
         console.error("Extraction error:", err);
-        showError(err.message || 'Could not reach the server. Please check your network connection.');
+        const userMsg = (err && err.message && !err.message.includes('<!doctype') && !err.message.includes('Unexpected token'))
+          ? err.message
+          : 'Could not reach the server. Please ensure python app.py is running on port 5000.';
+        showError(userMsg);
         if (loadingState) loadingState.classList.add('hidden');
       } finally {
         isExtracting = false;
@@ -1672,15 +1696,20 @@ tailwind.config = {
 
         if (!response.ok) {
           let errMessage = "Download failed. Please try again.";
-          try {
-            const errData = await response.json();
-            if (errData && errData.error && errData.error.message) {
-              errMessage = errData.error.message;
-            } else if (errData && errData.error) {
-              errMessage = typeof errData.error === 'string' ? errData.error : JSON.stringify(errData.error);
-            }
-          } catch (jsonErr) {
-            // Not JSON
+          const contentType = response.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            try {
+              const errData = await response.json();
+              if (errData && errData.error && errData.error.message) {
+                errMessage = errData.error.message;
+              } else if (errData && errData.error) {
+                errMessage = typeof errData.error === 'string' ? errData.error : JSON.stringify(errData.error);
+              }
+            } catch (jsonErr) {}
+          } else if (response.status === 404) {
+            errMessage = "Download endpoint not found (404).";
+          } else if (response.status >= 500) {
+            errMessage = `Server error (${response.status}) while processing download.`;
           }
           throw new Error(errMessage);
         }
@@ -1867,7 +1896,7 @@ tailwind.config = {
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-space-xl pb-space-2xl border-b border-white/[0.06]">
 <div class="lg:col-span-3 space-y-space-md">
 <div class="flex items-center gap-2.5">
-<img alt="ClipDrop Logo" class="h-7 w-7 object-contain rounded-lg border border-white/20 bg-[#141414]" src="logo.png" onerror="this.onerror=null; this.src='logo.svg';"/>
+<img alt="ClipDrop Logo" class="h-7 w-7 object-contain rounded-lg border border-white/20 bg-[#141414]" src="logo.svg" onerror="this.onerror=null; this.src='clipdrop-official.svg';"/>
 <span class="font-display text-lg tracking-tight text-white font-semibold flex items-center">
             ClipDrop
             <span class="inline-block w-1.5 h-1.5 rounded-full ml-1.5 bg-white/70"></span>
