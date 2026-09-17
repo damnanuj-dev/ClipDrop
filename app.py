@@ -33,6 +33,40 @@ logger = logging.getLogger("clipdrop")
 app = Flask(__name__, static_folder='.', static_url_path='')
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
+class VercelPathMiddleware:
+    """
+    WSGI Middleware to restore original request paths on Vercel Serverless.
+    Clears SCRIPT_NAME and resolves PATH_INFO from Vercel routing headers or query params,
+    ensuring routes match properly whether invoked via rewrites or direct serverless endpoints.
+    """
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        environ['SCRIPT_NAME'] = ''
+        qs = environ.get('QUERY_STRING', '')
+        if '__path=' in qs:
+            params = urllib.parse.parse_qs(qs)
+            if '__path' in params and params['__path']:
+                target = params['__path'][0]
+                environ['PATH_INFO'] = target
+                params.pop('__path', None)
+                environ['QUERY_STRING'] = urllib.parse.urlencode(params, doseq=True)
+        else:
+            matched = (
+                environ.get('HTTP_X_FORWARDED_URI') or
+                environ.get('HTTP_X_MATCHED_PATH') or
+                environ.get('REQUEST_URI') or
+                environ.get('RAW_URI')
+            )
+            if matched:
+                environ['PATH_INFO'] = matched.split('?')[0]
+            elif environ.get('PATH_INFO') in ('/api/index', '/api/index.py', '/api', '/api/'):
+                environ['PATH_INFO'] = '/'
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathMiddleware(app.wsgi_app)
+
 # -----------------------------------------------------------------------------
 # Runtime Verification & Caching (Deno, Node, & FFmpeg)
 # -----------------------------------------------------------------------------
@@ -512,6 +546,7 @@ def index():
     return jsonify({"error": "index.html not found"}), 404
 
 @app.route('/health')
+@app.route('/api/health')
 def health():
     """
     Health and diagnostics endpoint.
@@ -555,6 +590,7 @@ def health():
     }), (200 if is_healthy else 503)
 
 @app.route('/api/info', methods=['POST', 'OPTIONS'])
+@app.route('/info', methods=['POST', 'OPTIONS'])
 def get_video_info():
     """Extracts YouTube video metadata, thumbnails, and available qualities."""
     if request.method == 'OPTIONS':
@@ -668,6 +704,7 @@ def get_video_info():
     return jsonify(response_data)
 
 @app.route('/api/download', methods=['POST', 'GET', 'OPTIONS'])
+@app.route('/download', methods=['POST', 'GET', 'OPTIONS'])
 def download_media():
     """
     Serverless synchronous media download and streaming endpoint.
