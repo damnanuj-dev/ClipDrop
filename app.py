@@ -354,6 +354,50 @@ def build_ydl_opts(extra_opts: Optional[Dict[str, Any]] = None) -> Dict[str, Any
 
     return opts
 
+
+def extract_info_with_fallback(
+    url: str,
+    ydl_opts: Dict[str, Any],
+    download: bool = False
+) -> Tuple[Optional[Dict[str, Any]], Optional[Exception]]:
+    """
+    Runs yt-dlp extraction/download with the configured JavaScript runtimes.
+
+    The original application calls this helper from the metadata and download
+    routes, but the helper was missing. Keep the configured options intact and
+    return the yt-dlp exception to the caller so the existing error mapping
+    remains in control.
+    """
+    last_error: Optional[Exception] = None
+
+    # Use the supplied options first, exactly as configured by build_ydl_opts().
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=download)
+            return info, None
+    except yt_dlp.utils.DownloadError as exc:
+        last_error = exc
+    except Exception as exc:
+        last_error = exc
+
+    # If a JS runtime was configured, refresh runtime discovery once in case
+    # a Vercel cold start left a stale/missing runtime in the cached state.
+    # Do not silently alter extractor settings or authentication.
+    try:
+        refreshed = build_ydl_opts()
+        refreshed.update(ydl_opts)
+        if refreshed != ydl_opts:
+            with yt_dlp.YoutubeDL(refreshed) as ydl:
+                info = ydl.extract_info(url, download=download)
+                return info, None
+    except yt_dlp.utils.DownloadError as exc:
+        last_error = exc
+    except Exception as exc:
+        last_error = exc
+
+    return None, last_error
+
+
 # -----------------------------------------------------------------------------
 # Security & URL Normalization
 # -----------------------------------------------------------------------------
